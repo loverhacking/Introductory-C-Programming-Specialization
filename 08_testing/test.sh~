@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# 设置测试次数
+TEST_COUNT=10000
+
+# 设置int范围（32位有符号整数）
+MIN_INT=-2147483648
+MAX_INT=2147483647
+
+echo "Testing $TEST_COUNT random inputs in int range [$MIN_INT, $MAX_INT]..."
+echo "--------------------------------"
+
+# 记录找到差异的数量
+discrepancies=0
+
+for ((i=1; i<=TEST_COUNT; i++)); do
+    # 生成随机数（包括负数）
+    random_num=$(( RANDOM * RANDOM * RANDOM % (MAX_INT - MIN_INT + 1) + MIN_INT ))
+    
+    # 获取正确程序的输出
+    correct_output=$(./isPrime-correct "$random_num" 2>/dev/null)
+    
+    # 获取错误程序的输出
+    broken_output=$(./isPrime-broken3 "$random_num" 2>/dev/null)
+    
+    # 比较输出是否不同
+    if [ "$correct_output" != "$broken_output" ]; then
+        ((discrepancies++))
+        echo "Discrepancy #$discrepancies at input: $random_num"
+        echo "  isPrime-correct: '$correct_output'"
+        echo "  isPrimebroken2:  '$broken_output'"
+        echo "--------------------------------"
+    fi
+    
+    # 显示进度
+    if (( i % 100 == 0 )); then
+        echo -ne "Tested $i/$TEST_COUNT inputs ($((i*100/TEST_COUNT))%) - Found $discrepancies discrepancies\r"
+    fi
+done
+
+echo -e "\n\nTest completed. Found $discrepancies discrepancies in $TEST_COUNT tests."

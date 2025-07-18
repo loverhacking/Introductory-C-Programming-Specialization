@@ -1,0 +1,5 @@
+Testing 100 random inputs in int range [-2147483648, 2147483647]...
+--------------------------------
+Tested 100/100 inputs (100%) - Found 0 discrepancies
+
+Test completed. Found 0 discrepancies in 100 tests.
